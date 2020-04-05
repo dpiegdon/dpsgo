@@ -473,8 +473,8 @@ SWO
 Text Label 2050 6100 2    50   ~ 0
 ~RESET
 Wire Wire Line
-	4200 7950 4500 7950
-Text Label 4500 7950 2    50   ~ 0
+	4200 7950 4650 7950
+Text Label 4650 7950 2    50   ~ 0
 SWO
 $Comp
 L Device:Crystal Y?
@@ -625,17 +625,17 @@ Wire Wire Line
 	4200 6850 4650 6850
 Wire Wire Line
 	4200 7250 4650 7250
-Text Label 4650 6950 0    50   ~ 0
+Text Label 4650 6950 2    50   ~ 0
 SDO
-Text Label 4650 7050 0    50   ~ 0
+Text Label 4650 7050 2    50   ~ 0
 SDI
-Text Label 4650 7150 0    50   ~ 0
+Text Label 4650 7150 2    50   ~ 0
 FPGA_SS
-Text Label 4650 7250 0    50   ~ 0
+Text Label 4650 7250 2    50   ~ 0
 SCK
-Text Label 4650 6850 0    50   ~ 0
+Text Label 4650 6850 2    50   ~ 0
 CDONE
-Text Label 4650 6750 0    50   ~ 0
+Text Label 4650 6750 2    50   ~ 0
 CRESET_B
 $Comp
 L power:+3V3 #PWR?
@@ -743,7 +743,7 @@ PLL_OUT6
 Wire Wire Line
 	13300 3600 12650 3600
 Text Label 12650 3600 0    50   ~ 0
-OCXO_OUT_REF
+OCXO_10MHZ
 Wire Wire Line
 	13300 4400 12650 4400
 Text Label 12650 4400 0    50   ~ 0
@@ -754,11 +754,11 @@ Text Label 12650 4200 0    50   ~ 0
 PLL_INT
 Wire Wire Line
 	4200 8650 4650 8650
-Text Label 4650 8650 0    50   ~ 0
+Text Label 4650 8650 2    50   ~ 0
 PLL_INT
 Wire Wire Line
 	4650 8550 4200 8550
-Text Label 4650 8550 0    50   ~ 0
+Text Label 4650 8550 2    50   ~ 0
 PLL_EN
 NoConn ~ 13300 3100
 NoConn ~ 13300 3300
@@ -1026,6 +1026,52 @@ Text Label 8500 9750 0    50   ~ 0
 FPGA_INT
 Wire Wire Line
 	4200 7350 4650 7350
-Text Label 4650 7350 0    50   ~ 0
+Text Label 4650 7350 2    50   ~ 0
 FPGA_INT
+$Comp
+L oscilloquartz:8663-XS Y?
+U 1 1 5E8BB80C
+P 9850 2200
+F 0 "Y?" H 9500 2450 60  0000 L CNN
+F 1 "8663-XS" H 9950 2450 60  0000 L CNN
+F 2 "" H 9850 1850 60  0000 C CNN
+F 3 "http://www.sungwhatech.com/product/pdf/aging/8663.pdf" H 9850 1850 60  0001 C CNN
+	1    9850 2200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10350 2200 10850 2200
+Text Label 10850 2200 2    50   ~ 0
+OCXO_10MHZ
+$Comp
+L power:+10V #PWR?
+U 1 1 5E8E422D
+P 9850 1700
+F 0 "#PWR?" H 9850 1550 50  0001 C CNN
+F 1 "+10V" H 9865 1873 50  0000 C CNN
+F 2 "" H 9850 1700 50  0001 C CNN
+F 3 "" H 9850 1700 50  0001 C CNN
+	1    9850 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5E8E473D
+P 9850 2700
+F 0 "#PWR?" H 9850 2450 50  0001 C CNN
+F 1 "GND" H 9855 2527 50  0000 C CNN
+F 2 "" H 9850 2700 50  0001 C CNN
+F 3 "" H 9850 2700 50  0001 C CNN
+	1    9850 2700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9850 1700 9850 1800
+Wire Wire Line
+	9850 2600 9850 2700
+NoConn ~ 9350 2100
+Wire Wire Line
+	9350 2300 8850 2300
+Text Label 8850 2300 0    50   ~ 0
+DAC_OUT
 $EndSCHEMATC
