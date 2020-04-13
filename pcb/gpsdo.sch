@@ -420,12 +420,12 @@ $EndComp
 Wire Wire Line
 	8150 4150 8150 4200
 Wire Wire Line
-	7550 3650 7550 4200
-Wire Wire Line
 	8750 3650 8750 4200
-Text Label 8750 4200 1    50   ~ 0
-GPS_USB_D+
+Wire Wire Line
+	7550 3650 7550 4200
 Text Label 7550 4200 1    50   ~ 0
+GPS_USB_D+
+Text Label 8750 4200 1    50   ~ 0
 GPS_USB_D-
 $Comp
 L power:+10V #PWR089

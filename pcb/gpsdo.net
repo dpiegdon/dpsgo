@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/dpiegdon/programming/fpga/gpsdo/project/pcb/gpsdo.sch)
-    (date "Mon 13 Apr 2020 12:18:31 AM UTC")
+    (date "Mon 13 Apr 2020 12:44:12 AM UTC")
     (tool "Eeschema 5.1.5")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -2084,11 +2084,11 @@
       (node (ref M1) (pin 38))
       (node (ref U7) (pin 20)))
     (net (code 95) (name /GPS_USB_D-)
-      (node (ref D3) (pin 2))
+      (node (ref D3) (pin 3))
       (node (ref R36) (pin 2))
       (node (ref J11) (pin 2)))
     (net (code 96) (name /GPS_USB_D+)
-      (node (ref D3) (pin 3))
+      (node (ref D3) (pin 2))
       (node (ref J11) (pin 3))
       (node (ref R37) (pin 2)))
     (net (code 97) (name "Net-(U7-Pad14)")
