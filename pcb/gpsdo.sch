@@ -4,12 +4,12 @@ EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
 Sheet 1 1
-Title ""
+Title "David's Pretty Satisfactory Gps-disciplined Oscillator"
 Date ""
 Rev ""
 Comp ""
-Comment1 ""
-Comment2 ""
+Comment1 "(c) 2020 by David R. Piegdon"
+Comment2 "https://github.com/dpiegdon/dpsgo"
 Comment3 ""
 Comment4 ""
 $EndDescr
