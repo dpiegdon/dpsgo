@@ -701,7 +701,7 @@ FPGA
 Wire Notes Line
 	4750 11150 4750 9500
 Text Notes 4800 9600 0    50   ~ 0
-FRONT PANEL
+USER INTERFACE
 Wire Wire Line
 	700  7300 1200 7300
 Wire Wire Line
@@ -1355,8 +1355,6 @@ Wire Notes Line
 	12600 4700 9400 4700
 Wire Notes Line
 	12600 4700 12600 9900
-Text Notes 9450 4800 0    50   ~ 0
-REAR PANEL
 Wire Wire Line
 	6850 6500 6850 6600
 $Comp
