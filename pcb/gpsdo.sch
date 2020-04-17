@@ -4884,4 +4884,28 @@ F 3 "~" H 9550 6000 50  0001 C CNN
 	1    9550 6000
 	1    0    0    -1  
 $EndComp
+$Comp
+L Device:RF_Shield_One_Piece J16
+U 1 1 5EA2D598
+P 8500 5200
+F 0 "J16" H 7950 5000 50  0000 L CNN
+F 1 "RF_Shield_One_Piece" H 7950 5400 50  0000 L CNN
+F 2 "RF_Shielding:Laird_Technologies_BMI-S-202-F_16.50x16.50mm" H 8500 5100 50  0001 C CNN
+F 3 "~" H 8500 5100 50  0001 C CNN
+	1    8500 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8500 5600 8500 5700
+$Comp
+L power:GND #PWR0105
+U 1 1 5EB56E77
+P 8500 5700
+F 0 "#PWR0105" H 8500 5450 50  0001 C CNN
+F 1 "GND" H 8500 5550 50  0000 C CNN
+F 2 "" H 8500 5700 50  0001 C CNN
+F 3 "" H 8500 5700 50  0001 C CNN
+	1    8500 5700
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
