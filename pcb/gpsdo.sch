@@ -1063,11 +1063,11 @@ Wire Wire Line
 	3200 5500 3400 5500
 Wire Wire Line
 	3000 8500 3950 8500
-Text Label 3950 7900 2    50   ~ 0
+Text Label 3950 6900 2    50   ~ 0
 PLL_INT
 Wire Wire Line
 	3950 8400 3000 8400
-Text Label 3950 6800 2    50   ~ 0
+Text Label 3950 6600 2    50   ~ 0
 PLL_EN
 Text Label 3950 6500 2    50   ~ 0
 GPS_RXD
@@ -1085,11 +1085,11 @@ Text Label 3950 7800 2    50   ~ 0
 SWO
 Wire Wire Line
 	3000 7800 3950 7800
-Text Label 3950 7100 2    50   ~ 0
-~DAC_LOAD
-Text Label 3950 7000 2    50   ~ 0
-~DAC_RESET
 Text Label 3950 8000 2    50   ~ 0
+~DAC_LOAD
+Text Label 3950 7900 2    50   ~ 0
+~DAC_RESET
+Text Label 3950 7100 2    50   ~ 0
 ~DAC_CLEAR
 Wire Wire Line
 	3950 7600 3000 7600
@@ -1097,7 +1097,7 @@ Wire Wire Line
 	3000 7500 3950 7500
 Wire Wire Line
 	3950 7400 3000 7400
-Text Label 3950 6900 2    50   ~ 0
+Text Label 3950 7000 2    50   ~ 0
 ~DAC_ALERT
 Wire Wire Line
 	3000 7300 3950 7300
@@ -3846,7 +3846,7 @@ Wire Wire Line
 	5950 9950 5950 9700
 Text Label 5950 9700 3    50   ~ 0
 FAULT
-Text Label 3950 6600 2    50   ~ 0
+Text Label 3950 6200 2    50   ~ 0
 FAULT
 Wire Wire Line
 	3950 8300 3000 8300
@@ -3875,7 +3875,7 @@ Wire Wire Line
 	3100 6300 3000 6300
 Text Label 3950 6300 2    50   ~ 0
 EN_1V2
-Text Label 3950 6200 2    50   ~ 0
+Text Label 3950 6800 2    50   ~ 0
 ~EN_10V
 Wire Wire Line
 	3000 6100 3950 6100
