@@ -33,8 +33,8 @@ module top(
 	clock_prescaler #(.WIDTH(32)) system_clock_prescaler(PLL_INT_REF, system_clk, 0);
 
 
-	reg [35:0] counter = 0;
-	reg [35:0] latched_counter = 0;
+	reg [34:0] counter = 0;
+	reg [34:0] latched_counter = 0;
 
 	reg [3:0] gps_pulse_stabilizer = 0;
 	reg [3:0] gps_clock = 0;
@@ -93,7 +93,7 @@ module top(
 	wire encoder_button;
 	wire button_blue;
 
-	reg [3:0] input_state = 4'b0;
+	reg [4:0] input_state = 4'b0;
 
 	debounced_button #(.DEBOUNCE_CYCLES(7), .CLOCKED_EDGE_OUT(1))
 		debounce_encoder_a(.clk(system_clk[18]), .in(ENCODER_A), .out(encoder_a));	// FIXME only catches half the edges we need!
@@ -104,11 +104,13 @@ module top(
 	debounced_button #(.DEBOUNCE_CYCLES(7), .CLOCKED_EDGE_OUT(1))
 		debounce_bt_blue(.clk(system_clk[18]), .in(BTN_BLUE), .out(button_blue));
 
+	wire temperature_alert = ~TEMP_ALERT;
+
 	always @(negedge system_clk[0]) begin
 		if(clear_inputs) begin
 			input_state <= 4'b0;
 		end else begin
-			input_state <= input_state | { encoder_up, encoder_down, encoder_button, button_blue };
+			input_state <= input_state | { temperature_alert, encoder_up, encoder_down, encoder_button, button_blue };
 		end
 	end
 

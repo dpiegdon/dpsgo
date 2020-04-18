@@ -23,7 +23,7 @@ FILES= \
 	top.v
 
 
-all: top.rpt
+all: top.rpt top.bin
 
 prog: top.bin
 	iceprog $<
