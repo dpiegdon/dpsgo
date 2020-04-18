@@ -8,14 +8,15 @@ module top(
 	output wire FPGA_INT,
 	output wire FPGA_WDT,
 
-	input  wire PLL_OUT_REF,
+	input  wire PLL_INT_REF,
 	input  wire GPS_PULSE,
 
-	input  wire BTN_BLUE,
+	input  wire TEMP_ALERT,
 
 	input  wire ENCODER_A,
 	input  wire ENCODER_B,
 	input  wire ENCODER_BTN,
+	input  wire BTN_BLUE,
 
 	output wire [DISPLAY_PINCOUNT-1:0] LED_MATRIX
 	);
@@ -29,7 +30,7 @@ module top(
 
 	// Clock counter
 	wire [31:0] system_clk;
-	clock_prescaler #(.WIDTH(32)) system_clock_prescaler(PLL_OUT_REF, system_clk, 0);
+	clock_prescaler #(.WIDTH(32)) system_clock_prescaler(PLL_INT_REF, system_clk, 0);
 
 
 	reg [35:0] counter = 0;

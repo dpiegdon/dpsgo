@@ -3,21 +3,24 @@ set_io --warn-no-port SCK 15
 set_io --warn-no-port SS 14
 set_io --warn-no-port SDI 13
 set_io --warn-no-port SDO 12
-set_io --warn-no-port FPGA_INT 18
+set_io --warn-no-port FPGA_INT 7
 set_io --warn-no-port FPGA_WDT 8
 
 # clocks
-set_io --warn-no-port PLL_OUT_REF 6
-set_io --warn-no-port GPS_PULSE 19
+set_io --warn-no-port PLL_INT_REF 20
+set_io --warn-no-port GPS_PULSE 1
+
+# other IO
+set_io --warn-no-port TEMP_ALERT 18
 
 # buttons and encoder
-set_io --warn-no-port ENCODER_A 20
-set_io --warn-no-port ENCODER_B 22
-set_io --warn-no-port ENCODER_BTN 23
-set_io --warn-no-port BTN_BLUE 26
+set_io --warn-no-port ENCODER_A 29
+set_io --warn-no-port ENCODER_B 30
+set_io --warn-no-port ENCODER_BTN 31
+set_io --warn-no-port BTN_BLUE 32
 
 # LED matrix
-set_io --warn-no-port LED_MATRIX[0] 27
-set_io --warn-no-port LED_MATRIX[1] 29
-set_io --warn-no-port LED_MATRIX[2] 30
-set_io --warn-no-port LED_MATRIX[3] 31
+set_io --warn-no-port LED_MATRIX[0] 22
+set_io --warn-no-port LED_MATRIX[1] 23
+set_io --warn-no-port LED_MATRIX[2] 26
+set_io --warn-no-port LED_MATRIX[3] 27
