@@ -5,8 +5,8 @@ $Descr A3 16535 11693
 encoding utf-8
 Sheet 1 1
 Title "David's Pretty Satisfactory Gps-disciplined Oscillator"
-Date ""
-Rev ""
+Date "2020-04-18"
+Rev "v1"
 Comp ""
 Comment1 "(c) 2020 by David R. Piegdon"
 Comment2 "https://github.com/dpiegdon/dpsgo"
@@ -4906,6 +4906,39 @@ F 1 "GND" H 8500 5550 50  0000 C CNN
 F 2 "" H 8500 5700 50  0001 C CNN
 F 3 "" H 8500 5700 50  0001 C CNN
 	1    8500 5700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:Fiducial FID1
+U 1 1 5EA2F7CB
+P 9550 6600
+F 0 "FID1" H 9635 6646 50  0000 L CNN
+F 1 "Fiducial" H 9635 6555 50  0000 L CNN
+F 2 "Fiducial:Fiducial_1mm_Mask3mm" H 9550 6600 50  0001 C CNN
+F 3 "~" H 9550 6600 50  0001 C CNN
+	1    9550 6600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:Fiducial FID2
+U 1 1 5EA30AD5
+P 9550 6800
+F 0 "FID2" H 9635 6846 50  0000 L CNN
+F 1 "Fiducial" H 9635 6755 50  0000 L CNN
+F 2 "Fiducial:Fiducial_1mm_Mask3mm" H 9550 6800 50  0001 C CNN
+F 3 "~" H 9550 6800 50  0001 C CNN
+	1    9550 6800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:Fiducial FID3
+U 1 1 5EA37F91
+P 9550 7000
+F 0 "FID3" H 9635 7046 50  0000 L CNN
+F 1 "Fiducial" H 9635 6955 50  0000 L CNN
+F 2 "Fiducial:Fiducial_1mm_Mask3mm" H 9550 7000 50  0001 C CNN
+F 3 "~" H 9550 7000 50  0001 C CNN
+	1    9550 7000
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
