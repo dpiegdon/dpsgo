@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/dpiegdon/programming/fpga/gpsdo/project/pcb/gpsdo.sch)
-    (date "Sat 18 Apr 2020 12:33:08 AM UTC")
+    (date "Mon 20 Apr 2020 12:06:19 PM UTC")
     (tool "Eeschema 5.1.5")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -57,7 +57,7 @@
       (tstamp 5EA06640))
     (comp (ref U8)
       (value "uBlox NEO-7M")
-      (footprint RF_GPS:ublox_NEO)
+      (footprint dpiegdon:ublox_NEO_fixed_23)
       (libsource (lib ublox) (part NEO-7) (description "uBlox NEO-7M, -7N, -7P GPS module"))
       (sheetpath (names /) (tstamps /))
       (tstamp 5EA1835B))
