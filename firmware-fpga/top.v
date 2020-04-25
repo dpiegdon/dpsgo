@@ -88,20 +88,21 @@ module top(
 	wire clear_inputs;
 	wire encoder_a;
 	wire encoder_b;
-	wire encoder_up = encoder_a;	// FIXME
-	wire encoder_down = encoder_b;	// FIXME
+	wire encoder_ccw;
+	wire encoder_cw;
 	wire encoder_button;
 	wire button_blue;
 
 	reg [4:0] input_state = 4'b0;
+	// user IO state
+	wire [3:0] current_uio = { encoder_ccw, encoder_cw, encoder_button, button_blue };
+	reg [3:0] previous_uio = 3'b0;
 
-	debounced_button #(.DEBOUNCE_CYCLES(7), .CLOCKED_EDGE_OUT(1))
-		debounce_encoder_a(.clk(system_clk[18]), .in(ENCODER_A), .out(encoder_a));	// FIXME only catches half the edges we need!
-	debounced_button #(.DEBOUNCE_CYCLES(7), .CLOCKED_EDGE_OUT(1))
-		debounce_encoder_b(.clk(system_clk[18]), .in(ENCODER_B), .out(encoder_b));	// FIXME only catches half the edges we need!
-	debounced_button #(.DEBOUNCE_CYCLES(7), .CLOCKED_EDGE_OUT(1))
+	debounced_encoder #(.DEBOUNCE_CYCLES(7))
+		debounce_encoder(.clk(system_clk[18]), .in_a(ENCODER_A), .in_b(ENCODER_B), .out_ccw(encoder_ccw), .out_cw(encoder_cw));
+	debounced_button #(.DEBOUNCE_CYCLES(7))
 		debounce_bt_enc(.clk(system_clk[18]), .in(ENCODER_BTN), .out(encoder_button));
-	debounced_button #(.DEBOUNCE_CYCLES(7), .CLOCKED_EDGE_OUT(1))
+	debounced_button #(.DEBOUNCE_CYCLES(7))
 		debounce_bt_blue(.clk(system_clk[18]), .in(BTN_BLUE), .out(button_blue));
 
 	wire temperature_alert = ~TEMP_ALERT;
@@ -110,7 +111,10 @@ module top(
 		if(clear_inputs) begin
 			input_state <= 4'b0;
 		end else begin
-			input_state <= input_state | { temperature_alert, encoder_up, encoder_down, encoder_button, button_blue };
+			// current_uio is generated with a slower clock.
+			// so only mark those on rising edge.
+			input_state <= input_state | ((previous_uio ^ current_uio) & current_uio);
+			previous_uio <= current_uio;
 		end
 	end
 
