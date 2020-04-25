@@ -98,8 +98,8 @@ module top(
 	wire [3:0] current_uio = { encoder_ccw, encoder_cw, encoder_button, button_blue };
 	reg [3:0] previous_uio = 3'b0;
 
-	debounced_encoder #(.DEBOUNCE_CYCLES(7))
-		debounce_encoder(.clk(system_clk[18]), .in_a(ENCODER_A), .in_b(ENCODER_B), .out_ccw(encoder_ccw), .out_cw(encoder_cw));
+	rotary_encoder_pullup #(.DEBOUNCE_CYCLES(7))
+		rotary_encoder(.clk(system_clk[18]), .in_a(ENCODER_A), .in_b(ENCODER_B), .out_ccw(encoder_ccw), .out_cw(encoder_cw));
 	debounced_button #(.DEBOUNCE_CYCLES(7))
 		debounce_bt_enc(.clk(system_clk[18]), .in(ENCODER_BTN), .out(encoder_button));
 	debounced_button #(.DEBOUNCE_CYCLES(7))
