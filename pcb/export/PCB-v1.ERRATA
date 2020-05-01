@@ -1,9 +1,13 @@
 
 Power supply:
-* 1.2V rail has very high ripple. Increase L3 to 220u.
-* 1.2V rail has very little current, so footprint can be shrinked to much smaller.
+* [tested, done] 1.2V rail has very high ripple. Increase L3 to 220u.
+* [tested, done] 1.2V rail has very little current, so footprint can be shrinked to much smaller.
 * 3.3V rail ripple could be lower. Maybe increase L2 to 10u?
 * 3.3V rail also might have little current. Maybe shringk footprint, too?
+* add pull-downs to EN_12V, EN_1V2 and pull-up to ~EN_10V, so power does not autostart. allows proper system-check by firmware before enabling all
+* optionally add a 1K pullup to FAULT LED, so it lights if firmware did not start?
+* add power rail indicator LEDs for all rails including input rail.
+* make pull-up on CRESET_B of FPGA a pull-down, and rename net to ~FPGA_RESET
 
 RF section:
 
@@ -11,3 +15,4 @@ RF section:
 * Path impedance is completely ignored for all outputs.
 * Potentially add an extra capacitor for pin 18 of Si5351C.
 * ublox_NEO footprint contained an error where pad23 does not show up in the paste layer (and thus on the stencil).
+* add pull-up to OEB of Si5351C to prevent early enable. rename PLL_EN to ~PLL_EN.
