@@ -4,6 +4,3 @@
 [submodule "firmware-fpga/verilog-buildingblocks"]
 	path = firmware-fpga/verilog-buildingblocks
 	url = https://github.com/dpiegdon/verilog-buildingblocks.git
-[submodule "firmware-microcontroller/embedded_drivers"]
-	path = firmware-microcontroller/embedded_drivers
-	url = https://github.com/dpiegdon/embedded_drivers.git
