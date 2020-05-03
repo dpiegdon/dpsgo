@@ -4,3 +4,6 @@
 [submodule "firmware-fpga/verilog-buildingblocks"]
 	path = firmware-fpga/verilog-buildingblocks
 	url = https://github.com/dpiegdon/verilog-buildingblocks.git
+[submodule "firmware-micro"]
+	path = firmware-micro
+	url = https://github.com/dpiegdon/dpsgo-firmware.git
