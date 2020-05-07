@@ -8,6 +8,7 @@ Power supply:
 
 * [CRITICAL] [done] 1.2V rail has very high ripple. Increase L3 to 220u. (implemented in master branch)
 * [done] 1.2V rail has very little current, so shrink footprint size. (implemented in master branch)
+* [done] distance between input protection diode D13 and input connector GND is very small. increase. (implemented in master branch)
 * 3.3V rail ripple could be lower. Maybe increase L2 to 10u?
 * 3.3V rail also might have little current. Measure under load and then maybe shrink footprint, too?
 * Add pull-downs to EN_12V, EN_1V2 and pull-up to ~EN_10V, so power does not autostart. That allows proper system-check by firmware before enabling all rails.
