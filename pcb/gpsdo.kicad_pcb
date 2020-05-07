@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 38)
+    (drawings 41)
     (tracks 1934)
     (zones 0)
     (modules 161)
@@ -3321,7 +3321,7 @@
     (tags "Surface mounted pin header SMD 2x05 1.27mm double row")
     (path /5EA06640)
     (attr smd)
-    (fp_text reference J1 (at -5.2 -2.6) (layer F.SilkS)
+    (fp_text reference J1 (at -5.15 -1.3) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value JTAG (at 0 4.235) (layer F.Fab)
@@ -7050,6 +7050,9 @@
       (net 2 GND))
   )
 
+  (gr_line (start 94.75 44.65) (end 94 44.25) (layer F.SilkS) (width 0.12) (tstamp 5EB44BD0))
+  (gr_line (start 94 45.05) (end 94.75 44.65) (layer F.SilkS) (width 0.12))
+  (gr_line (start 94 44.25) (end 94 45.05) (layer F.SilkS) (width 0.12))
   (gr_text "Si5351C\nXA" (at 106.4 123.5) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
   )
