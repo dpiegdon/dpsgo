@@ -19,6 +19,7 @@ Power supply:
 
 RF section:
 
+* [CRITICAL] R44, currently 50 Ohm, overloads CLK0 output. reduce to 470 Ohm. with 2mA drive (0b11 CLK0_IDRV) this works well.
 * [done] uBlox_NEO footprint contained an error where pad23 does not show up in the paste layer (and thus on the stencil). (implemented in master branch right after release)
 * [done] Change GPS antenna to a choice of ceramics antenna or SMA connector with optional bias. (implemented in master branch)
 * Output CLKOUT_0 is not set up for 50 ohm impedance.
