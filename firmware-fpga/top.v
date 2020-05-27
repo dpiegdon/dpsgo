@@ -113,7 +113,7 @@ module top(
 		end else begin
 			// current_uio is generated with a slower clock.
 			// so only mark those on rising edge.
-			input_state <= input_state | ((previous_uio ^ current_uio) & current_uio);
+			input_state <= input_state | ((previous_uio ^ current_uio) & ~current_uio);
 			previous_uio <= current_uio;
 		end
 	end
@@ -129,7 +129,7 @@ module top(
 	wire spi_value_valid;
 
 	tristate_output miso_driver(SDO, spi_miso_en, spi_miso_out);
-	simple_spi_slave #(.WIDTH(40)) spi_slave(
+	simple_spi_slave #(.WIDTH(40), .CPOL(1'b1)) spi_slave(
 		.system_clk(system_clk[0]),
 		.pin_ncs(SS),
 		.pin_clk(SCK),
