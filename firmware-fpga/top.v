@@ -68,8 +68,8 @@ module top(
 	end
 
 	// LED matrix
-	wire display_pixelclock = system_clk[18];
-	reg [DISPLAY_PIXELCOUNT-1:0] display_state = 0;
+	wire display_pixelclock = system_clk[14];
+	reg [DISPLAY_PIXELCOUNT-1:0] display_state = 12'hfff;
 	wire [DISPLAY_PINCOUNT-1:0] display_en;
 	wire [DISPLAY_PINCOUNT-1:0] display_out;
 
@@ -99,11 +99,11 @@ module top(
 	reg [3:0] previous_uio = 3'b0;
 
 	rotary_encoder_pullup #(.DEBOUNCE_CYCLES(7))
-		rotary_encoder(.clk(system_clk[18]), .in_a(ENCODER_A), .in_b(ENCODER_B), .out_ccw(encoder_ccw), .out_cw(encoder_cw));
+		rotary_encoder(.clk(system_clk[14]), .in_a(ENCODER_A), .in_b(ENCODER_B), .out_ccw(encoder_ccw), .out_cw(encoder_cw));
 	debounced_button #(.DEBOUNCE_CYCLES(7))
-		debounce_bt_enc(.clk(system_clk[18]), .in(ENCODER_BTN), .out(encoder_button));
+		debounce_bt_enc(.clk(system_clk[14]), .in(ENCODER_BTN), .out(encoder_button));
 	debounced_button #(.DEBOUNCE_CYCLES(7))
-		debounce_bt_blue(.clk(system_clk[18]), .in(BTN_BLUE), .out(button_blue));
+		debounce_bt_blue(.clk(system_clk[14]), .in(BTN_BLUE), .out(button_blue));
 
 	wire temperature_alert = ~TEMP_ALERT;
 
