@@ -67,3 +67,11 @@ Interfaces:
 
  * (internally) JTAG to microcontroller
 
+
+External references
+-------------------
+
+https://gerrysweeney.com/wp-content/uploads/2013/10/OCXO-Rev-1F.png
+
+https://www.eevblog.com/forum/testgear/bg7tbl-gpsdo-master-reference/
+
