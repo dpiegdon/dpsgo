@@ -63,7 +63,7 @@ top.json: $(FILES)
 	iverilog -o $@ $^
 
 %.json: %.v
-	yosys -Q $(QUIET) -p 'synth_ice40 -top $(subst .v,,$<) -json $@' $^
+	yosys -Q $(QUIET) -p 'synth_ice40 -abc2 -top $(subst .v,,$<) -json $@' $^
 
 %.asc: %.json
 	nextpnr-ice40 $(QUIET) --promote-logic --opt-timing --$(DEVICE) --package $(PACKAGE) --pcf $(PCF) --json $< --asc $@

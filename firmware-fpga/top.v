@@ -9,6 +9,7 @@ module top(
 
 	input  wire PLL_INT_REF,
 	input  wire GPS_PULSE,
+	input  wire TEMP_ALERT,
 
 	input  wire ENCODER_A,
 	input  wire ENCODER_B,
@@ -34,12 +35,12 @@ module top(
 	end
 
 
-	// GPS-referenced counter
+	// GPS-triggered counter
 	reg [COUNTERWIDTH-1:0] counter = 0;
 	reg [COUNTERWIDTH-1:0] latched_counter = 0;
 
-	reg [1+GPSCLOCKWIDTH-1:0] gps_clock = 0;
-	reg [GPSCLOCKWIDTH-1:0] gps_average_count = 0;
+	reg [GPSCLOCKWIDTH-1:0] gps_clock = 0;
+	reg [GPSCLOCKWIDTH-1:0] gps_average = 0;
 	reg [3:0] gps_pulse_stabilizer = 0;
 
 	wire counter_was_received;
@@ -48,7 +49,8 @@ module top(
 		gps_pulse_stabilizer = { GPS_PULSE, gps_pulse_stabilizer[3:1] };
 		if(gps_pulse_stabilizer[1:0] == 2'b10) begin
 			// rising edge on GPS_PULSE
-			if(gps_clock > gps_average_count) begin
+			if(gps_clock == gps_average) begin
+				// this averages over 1+gps_average GPS pulses
 				latched_counter <= counter;
 				counter <= 0;
 				gps_clock <= 0;
@@ -72,7 +74,7 @@ module top(
 	end
 
 
-	// Input devices
+	// external inputs
 	wire clear_inputs;
 	wire encoder_a;
 	wire encoder_b;
@@ -81,12 +83,6 @@ module top(
 	wire encoder_button;
 	wire button_blue;
 
-	reg [INPUTWIDTH-1:0] input_state = 0;
-
-	// user IO state
-	wire [INPUTWIDTH-1:0] current_uio = { encoder_ccw, encoder_cw, encoder_button, button_blue };
-	reg [INPUTWIDTH-1:0] previous_uio = 0;
-
 	rotary_encoder_pullup #(.DEBOUNCE_CYCLES(0))
 		rotary_encoder(.clk(system_clk[6]), .in_a(ENCODER_A), .in_b(ENCODER_B), .out_ccw(encoder_ccw), .out_cw(encoder_cw));
 	debounced_button #(.DEBOUNCE_CYCLES(1))
@@ -94,15 +90,19 @@ module top(
 	debounced_button #(.DEBOUNCE_CYCLES(1))
 		debounce_bt_blue(.clk(system_clk[6]), .in(BTN_BLUE), .out(button_blue));
 
+	// IO state
+	reg [INPUTWIDTH-1:0] input_state = 0;
+	wire [INPUTWIDTH-1:0] current_input = { TEMP_ALERT, encoder_ccw, encoder_cw, encoder_button, button_blue };
+	reg [INPUTWIDTH-1:0] previous_input = 0;
+
 	always @(posedge PLL_INT_REF) begin
 		if(clear_inputs) begin
 			input_state <= 0;
 		end else begin
-			// current_uio is generated with a slower clock.
-			// so only mark those on rising edge.
-			input_state <= input_state | ((previous_uio ^ current_uio) & ~current_uio);
-			previous_uio <= current_uio;
+			// IO clock is slower, so only mark rising edges
+			input_state <= input_state | ((previous_input ^ current_input) & ~current_input);
 		end
+		previous_input <= current_input;
 	end
 
 
@@ -136,7 +136,7 @@ module top(
 
 	always @(posedge PLL_INT_REF) begin
 		if(spi_value_valid) begin
-			gps_average_count <= spi_value_mosi[GPSCLOCKWIDTH-1:0];
+			gps_average <= spi_value_mosi[GPSCLOCKWIDTH-1:0];
 		end
 	end
 
