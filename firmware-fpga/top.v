@@ -41,7 +41,7 @@ module top(
 	reg [3:0] gps_average_count = 0;
 	wire counter_was_received;
 	always @(negedge system_clk[0]) begin
-		gps_pulse_stabilizer = { GPS_PULSE, gps_pulse_stabilizer[2:0] };
+		gps_pulse_stabilizer = { GPS_PULSE, gps_pulse_stabilizer[3:1] };
 		if(gps_pulse_stabilizer[1:0] == 2'b10) begin
 			// rising edge on GPS_PULSE
 			if(gps_clock > gps_average_count) begin
