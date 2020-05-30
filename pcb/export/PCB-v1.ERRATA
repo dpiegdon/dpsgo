@@ -27,6 +27,7 @@ RF section:
 * rotate Si5351C 90 degree CCW, so that no plane-hopping is needed. reassign all CLKx ports in matching order.
 * add PPS output to GPS section (u.FL)
 * add one or two extra clock inputs to FPGA (u.FL)
+* add tuning voltage output port (u.FL or pin?)
 * add debug pins to FPGA (remaining)
 * Output CLKOUT_0 is not set up for 50 ohm impedance.
 * maybe swap outputs of PLL_INT_REF: buffer to FPGA, straight to CLK0 => better impedance. buffer can probably take stronger termination at FPGA
