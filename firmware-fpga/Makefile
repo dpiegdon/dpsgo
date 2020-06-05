@@ -13,9 +13,7 @@ TESTS=$(TESTBENCHES:%.v=%.test)
 .PRECIOUS: %.json %.asc %.bin %.rpt
 
 FILES= \
-	verilog-buildingblocks/clock_prescaler.v \
 	verilog-buildingblocks/debouncer.v \
-	verilog-buildingblocks/charlieplexer.v \
 	verilog-buildingblocks/simple_spi_slave.v \
 	verilog-buildingblocks/rotary_encoder.v \
 	verilog-buildingblocks/lattice_ice40/debounced_button.v \
