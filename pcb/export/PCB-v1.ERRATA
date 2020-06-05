@@ -16,6 +16,7 @@ Power supply:
 * Add pull-downs to EN_12V, EN_1V2 and pull-up to ~EN_10V, so power does not autostart. That allows proper system-check by firmware before enabling all rails.
 * Make pull-up on CRESET_B of FPGA a pull-down, and rename net to ~FPGA_RESET.
 * Add pull-down to ~GPS_RESET to prevent auto-startup.
+* remove higher copper planes under OCXO to reduce temperature leakage
 
 
 RF section:
