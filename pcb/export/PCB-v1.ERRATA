@@ -24,6 +24,7 @@ RF section:
 * [RISK] there is 3.3V on GPS antenna even if no rail was connected. coming out of ublox module? add series-CAP?
 * [done] uBlox_NEO footprint contained an error where pad23 does not show up in the paste layer (and thus on the stencil). (implemented in master branch right after release)
 * [done] Change GPS antenna to a choice of ceramics antenna or SMA connector with optional bias. (implemented in master branch)
+* add footprints of other OCXOs than the 8663-XS so any available can be used. adapt/check tuning voltage and power supply!
 * rotate Si5351C 90 degree CCW, so that no plane-hopping is needed. reassign all CLKx ports in matching order.
 * add PPS output to GPS section (u.FL)
 * add one or two extra clock inputs to FPGA (u.FL)
@@ -31,17 +32,23 @@ RF section:
 * add debug pins to FPGA (remaining)
 * Output CLKOUT_0 is not set up for 50 ohm impedance.
 * maybe swap outputs of PLL_INT_REF: buffer to FPGA, straight to CLK0 => better impedance. buffer can probably take stronger termination at FPGA
-* Path impedance is completely ignored for all outputs.
-* Potentially add an extra 100n capacitor for pin 18 of Si5351C.
+* Path impedance currenlty is completely ignored for all outputs.
+* Add an extra 100n capacitor for pin 18 of Si5351C.
 * Add pull-up to OEB of Si5351C to prevent early enable. rename PLL_EN to ~PLL_EN.
 * Outputs should have proper BNC connector. (e.g. Molex WM5524-ND or Molex WM4089-ND)
 * Rename outputs to [0..7] instead of [0..3, 7..4]
 
 
+Logic:
+* LP384 FPGA is too small to do freq-counting, SPI, LED control and UI control. Pick another FPGA or let FPGA only do frequency counting by moving the UI/LEDs to the microcontroller.
+* consider different unneeded signals connected to microcontroller for removal. many are not needed or can be handled via pullup/down.
+* potentially add small series resistors into I2C and SPI busses to improve signal quality
+* add test-pins for SPI and I2C bus and other control signals
+
+
 Interface section:
 
-* Add power rail indicator LEDs for all rails including input rail. (amber?)
+* Maybe add power rail indicator LEDs for all rails including input rail. (amber?)
 * Optionally add a 1K pullup to FAULT LED, so it lights if firmware did not start?
-* Pick a standard button for "cancel" and place a standard blue LED next to the other color LEDs
-* add test-pins for SPI and I2C bus and other control signals
+* Pick a standard button for "cancel" and place a standard blue LED next to the other color LEDs. Avoids obscure button part.
 
