@@ -21,8 +21,10 @@ Development status
 ------------------
 
 Currently I am working on the firmware for V1 of the PCB. During that I
-found multiple issues with PCB-V1 which hopefully culminate in another
-revision of the PCB, and then the firmware. See <a
+found multiple issues with PCB-V1 (<a
+href="https://github.com/dpiegdon/dpsgo/blob/master/pcb/export/PCB-v1.pdf">Schematic</a>)
+which hopefully culminate in another revision of the PCB, and then the
+firmware. See <a
 href="https://github.com/dpiegdon/dpsgo/blob/master/pcb/export/PCB-v1.ERRATA">PCB-V1
 ERRATA</a>.
 
@@ -44,6 +46,9 @@ System components PCB-V1
 
 <img
 src="https://github.com/dpiegdon/dpsgo/blob/master/pcb/export/PCB-v1-overview.jpg">
+
+<a
+href="https://github.com/dpiegdon/dpsgo/blob/master/pcb/export/PCB-v1.pdf">Schematic.</a>
 
 OCXO: refurbished 8663-XS with 10MHz output
 
