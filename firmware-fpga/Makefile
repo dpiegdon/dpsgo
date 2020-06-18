@@ -49,13 +49,16 @@ graphs: $(subst .v,.png,$(FILES))
 
 top.json: $(FILES)
 
+top.dot: $(FILES)
+
 
 %.png: %.dot
 	dot -Tpng $^ > $@
 
 %.dot: %.v
 	@# further details: techmap, flatten
-	-yosys -p 'proc; opt -fine -full; show -colors 1 -prefix $(subst .dot,,$@) -format dot $(subst .dot,,$(notdir $@))' $^
+	@# see http://www.clifford.at/yosys/files/yosys_appnote_011_design_investigation.pdf
+	yosys -p 'proc; opt -fine -full; show -colors 1 -width -stretch -prefix $(subst .dot,,$@) -format dot $(subst .dot,,$(notdir $@))' $^
 
 %_tb.test: %_tb.v %.v
 	iverilog -o $@ $^
