@@ -110,7 +110,26 @@ Interfaces:
 External references
 -------------------
 
+A list of some hobby GPSDO designs:
+https://attila.kinali.ch/blog/2016/02/07/gps-disciplined-oscillator
+
+A GPSDO with rubidium standard:
+http://www.medpants.com/my-reeds/itemlist/category/28-electronics
+
+Alternative OCXO tuning schematic:
 https://gerrysweeney.com/wp-content/uploads/2013/10/OCXO-Rev-1F.png
 
+"bt7tbl" GPSDO that can be bought on the internets:
 https://www.eevblog.com/forum/testgear/bg7tbl-gpsdo-master-reference/
 
+Single-chip GPSDO control loop GPSDO:
+https://www.analog.com/media/en/technical-documentation/application-notes/AN-1002.pdf
+
+"OpenPPS" GPSDO project:
+http://www.rocketmanrc.com/openpps.html
+
+"Themis" GPSDO from HPSDR:
+http://openhpsdr.org/wiki/index.php?title=GPSTCXO
+
+GPSDO by dfannin:
+https://github.com/dfannin/gpsdo
