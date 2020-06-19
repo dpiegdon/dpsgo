@@ -13,13 +13,8 @@ TESTS=$(TESTBENCHES:%.v=%.test)
 .PRECIOUS: %.json %.asc %.bin %.rpt
 
 FILES= \
-	verilog-buildingblocks/debouncer.v \
-	verilog-buildingblocks/simple_spi_slave.v \
-	verilog-buildingblocks/rotary_encoder.v \
-	verilog-buildingblocks/lattice_ice40/debounced_button.v \
-	verilog-buildingblocks/lattice_ice40/rotary_encoder_pullup.v \
+	verilog-buildingblocks/synchronizer.v \
 	verilog-buildingblocks/lattice_ice40/tristate_output.v \
-	verilog-buildingblocks/lattice_ice40/pullup_input.v \
 	top.v
 
 

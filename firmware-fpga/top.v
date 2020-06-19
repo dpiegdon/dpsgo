@@ -1,147 +1,98 @@
 `default_nettype none
 
 module top(
-	input  wire SCK,
-	input  wire SS,
-	input  wire SDI,
-	output wire SDO,
+	input wire MAJOR_CLOCK,
 	output wire FPGA_INT,
+	input  wire MINOR_CLOCK,
 
-	input  wire PLL_INT_REF,
-	input  wire GPS_PULSE,
-	input  wire TEMP_ALERT,
+	input wire SS,
+	input wire SCK,
+	input wire SDI,
+	output wire SDO);
 
-	input  wire ENCODER_A,
-	input  wire ENCODER_B,
-	input  wire ENCODER_BTN,
-	input  wire BTN_BLUE,
-	);
+	localparam CPOL = 1'b1;
+	localparam DOWNCOUNT_WIDTH = 8;
+	localparam UPCOUNT_WIDTH = 34;
+	localparam WIDTH = UPCOUNT_WIDTH + DOWNCOUNT_WIDTH;
 
+	/*
+	 * upcount and downcount combined are the SPI word. they are
+	 * transparent shift registers. no counting will be done if
+	 * CS is active, so that the controller can replace the
+	 * contents unobstructed. downcount is high-side of SPI-word,
+	 * upcount is low-side of SPI word. all values are transmitted
+	 * MSB first. after CS deassert wait until next rising edge on
+	 * MINOR_CLOCK, *then* start counting in upcount synced to
+	 * MAJOR_CLOCK. each time another MINOR_CLOCK is caught,
+	 * downcount is decreased, until downcount is zero. then all
+	 * counting stops and an interrupt is asserted to the
+	 * controller.
+	 * to properly capture the differences in the clocks,
+	 * MINOR_CLOCK must be the slower clock of both.
+	 *
+	 *      /-------------|-----------\
+	 * ==>  |  downcount  |  upcount  |  ==>
+	 *      \-------------|-----------/
+	 */
 
-	/* register to hold how many gps-clocks the firmware wants to average over */
-	localparam GPSCLOCKWIDTH = 5;
-	/* 100MHz, as the maximum clock frequency, fits into 27 bits if counted
-	 * for a second: ld(100e6)=26.57 */
-	localparam COUNTERWIDTH = 27 + GPSCLOCKWIDTH;
+	reg [UPCOUNT_WIDTH-1:0] upcount;
+	reg [DOWNCOUNT_WIDTH-1:0] downcount;
 
-	localparam INPUTWIDTH = 8;
-	localparam SPIREGWIDTH = INPUTWIDTH + COUNTERWIDTH;
+	reg minor_edge_seen = 0;
+	wire allow_downcount = |downcount;
+	wire do_upcount = allow_downcount && minor_edge_seen && !&upcount;
 
+	assign FPGA_INT = !allow_downcount;
 
-	// System clock counter
-	wire [6:0] system_clk;
-	always @(posedge PLL_INT_REF) begin
-		system_clk <= system_clk+1;
-	end
+	wire minor_sync;
+	wire minor_rising;
+	wire minor_falling;
+	synchronizer minor_syncer(MAJOR_CLOCK, MINOR_CLOCK, minor_sync, minor_rising, minor_falling);
 
+	wire ss_sync;
+	wire ss_rising;
+	wire ss_falling;
+	synchronizer ss_syncer(MAJOR_CLOCK, CPOL ^ SCK, ss_sync, ss_rising, ss_falling);
+	wire cs_start = (ss_falling);
+	wire cs_active = (!ss_sync);
+	wire cs_stop = (ss_rising);
 
-	// GPS-triggered counter
-	reg [COUNTERWIDTH-1:0] counter = 0;
-	reg [COUNTERWIDTH-1:0] latched_counter = 0;
+	wire sck_sync;
+	wire sck_rising;
+	wire sck_falling;
+	synchronizer sck_syncer(MAJOR_CLOCK, SCK, sck_sync, sck_rising, sck_falling);
+	wire sample_in = sck_rising;
+	wire latch_out = sck_falling;
 
-	reg [GPSCLOCKWIDTH-1:0] gps_clock = 0;
-	reg [GPSCLOCKWIDTH-1:0] gps_average = 0;
-	reg [3:0] gps_pulse_stabilizer = 0;
+	wire mosi_sync;
+	synchronizer mosi_syncer(MAJOR_CLOCK, SDI, mosi_sync);
 
-	wire counter_was_received;
+	reg miso_out;
+	tristate_output miso_driver(SDO, !SS, miso_out);
 
-	always @(posedge PLL_INT_REF) begin
-		gps_pulse_stabilizer = { GPS_PULSE, gps_pulse_stabilizer[3:1] };
-		if(gps_pulse_stabilizer[1:0] == 2'b10) begin
-			// rising edge on GPS_PULSE
-			if(gps_clock == gps_average) begin
-				// this averages over 1+gps_average GPS pulses
-				latched_counter <= counter;
-				counter <= 0;
-				gps_clock <= 0;
-			end else begin
-				gps_clock <= gps_clock + 1;
-				if(!&counter) begin
-					counter <= counter + 1;
-				end
-				if(counter_was_received) begin
-					latched_counter <= 0;
-				end
+	always @(posedge MAJOR_CLOCK) begin
+		if(cs_active) begin
+			// SPI shift logic
+			if(sample_in) begin
+				{downcount, upcount} <= { mosi_sync, downcount, upcount[UPCOUNT_WIDTH-1:1] };
+			end else if(latch_out) begin
+				miso_out <= upcount[0];
 			end
+			minor_edge_seen <= 0;
 		end else begin
-			if(!&counter) begin
-				counter <= counter + 1;
+			// counting logic
+			if(do_upcount) begin
+				upcount = upcount + 1;
 			end
-			if(counter_was_received) begin
-				latched_counter <= 0;
+			if(minor_rising) begin
+				if(minor_edge_seen) begin
+					downcount = downcount - 1;
+				end
+				minor_edge_seen <= 1;
 			end
+			miso_out <= 0;
 		end
 	end
-
-
-	// external inputs
-	wire clear_inputs;
-	wire encoder_a;
-	wire encoder_b;
-	wire encoder_ccw;
-	wire encoder_cw;
-	wire encoder_button;
-	wire button_blue;
-
-	rotary_encoder_pullup #(.DEBOUNCE_CYCLES(0))
-		rotary_encoder(.clk(system_clk[6]), .in_a(ENCODER_A), .in_b(ENCODER_B), .out_ccw(encoder_ccw), .out_cw(encoder_cw));
-	debounced_button #(.DEBOUNCE_CYCLES(1))
-		debounce_bt_enc(.clk(system_clk[6]), .in(ENCODER_BTN), .out(encoder_button));
-	debounced_button #(.DEBOUNCE_CYCLES(1))
-		debounce_bt_blue(.clk(system_clk[6]), .in(BTN_BLUE), .out(button_blue));
-
-	// IO state
-	reg [INPUTWIDTH-1:0] input_state = 0;
-	wire [INPUTWIDTH-1:0] current_input = { TEMP_ALERT, encoder_ccw, encoder_cw, encoder_button, button_blue };
-	reg [INPUTWIDTH-1:0] previous_input = 0;
-
-	always @(posedge PLL_INT_REF) begin
-		if(clear_inputs) begin
-			input_state <= 0;
-		end else begin
-			// IO clock is slower, so only mark rising edges
-			input_state <= input_state | ((previous_input ^ current_input) & ~current_input);
-		end
-		previous_input <= current_input;
-	end
-
-
-	// SPI interface
-	wire spi_miso_en;
-	wire spi_miso_out;
-	wire [SPIREGWIDTH-1:0] spi_value_miso;
-	wire [SPIREGWIDTH-1:0] spi_value_mosi;
-	wire spi_cs_start;
-	wire spi_cs_stop;
-	wire spi_value_valid;
-
-	assign counter_was_received = spi_value_valid;
-	assign clear_inputs = spi_value_valid;
-
-	tristate_output miso_driver(SDO, spi_miso_en, spi_miso_out);
-	simple_spi_slave #(.WIDTH(SPIREGWIDTH), .CPOL(1'b1)) spi_slave(
-		.system_clk(PLL_INT_REF),
-		.pin_ncs(SS),
-		.pin_clk(SCK),
-		.pin_mosi(SDI),
-		.pin_miso(spi_miso_out),
-		.pin_miso_en(spi_miso_en),
-		.value_miso(spi_value_miso),
-		.value_mosi(spi_value_mosi),
-		.cs_start(spi_cs_start),
-		.cs_stop(spi_cs_stop),
-		.value_valid(spi_value_valid));
-
-	assign spi_value_miso = { latched_counter, input_state };
-
-	always @(posedge PLL_INT_REF) begin
-		if(spi_value_valid) begin
-			gps_average <= spi_value_mosi[GPSCLOCKWIDTH-1:0];
-		end
-	end
-
-
-	// Interrupt generation
-	assign FPGA_INT = |spi_value_miso;
 
 endmodule
+

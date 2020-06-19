@@ -7,8 +7,8 @@ set_io --warn-no-port FPGA_INT 7
 set_io --warn-no-port FPGA_WDT 8
 
 # clocks
-set_io --warn-no-port PLL_INT_REF 20
-set_io --warn-no-port GPS_PULSE 1
+set_io --warn-no-port MAJOR_CLOCK 20
+set_io --warn-no-port MINOR_CLOCK 1
 
 # other IO
 set_io --warn-no-port TEMP_ALERT 18
