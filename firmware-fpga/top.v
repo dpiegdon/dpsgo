@@ -20,7 +20,7 @@ module top(
 	 * transparent shift registers. no counting will be done if
 	 * CS is active, so that the controller can replace the
 	 * contents unobstructed. downcount is high-side of SPI-word,
-	 * upcount is low-side of SPI word. all values are transmitted
+	 * upcount is low-side of SPI word. transmission is done
 	 * MSB first. after CS deassert wait until next rising edge on
 	 * MINOR_CLOCK, *then* start counting in upcount synced to
 	 * MAJOR_CLOCK. each time another MINOR_CLOCK is caught,
@@ -31,12 +31,12 @@ module top(
 	 * MINOR_CLOCK must be the slower clock of both.
 	 *
 	 *      /-------------|-----------\
-	 * ==>  |  downcount  |  upcount  |  ==>
+	 * <=== |  downcount  |  upcount  |  <===
 	 *      \-------------|-----------/
 	 */
 
-	reg [UPCOUNT_WIDTH-1:0] upcount;
-	reg [DOWNCOUNT_WIDTH-1:0] downcount;
+	reg [UPCOUNT_WIDTH-1:0] upcount = 0;
+	reg [DOWNCOUNT_WIDTH-1:0] downcount = 0;
 
 	reg minor_edge_seen = 0;
 	wire allow_downcount = |downcount;
@@ -49,48 +49,44 @@ module top(
 	wire minor_falling;
 	synchronizer minor_syncer(MAJOR_CLOCK, MINOR_CLOCK, minor_sync, minor_rising, minor_falling);
 
-	wire ss_sync;
-	wire ss_rising;
-	wire ss_falling;
-	synchronizer ss_syncer(MAJOR_CLOCK, CPOL ^ SCK, ss_sync, ss_rising, ss_falling);
-	wire cs_start = (ss_falling);
-	wire cs_active = (!ss_sync);
-	wire cs_stop = (ss_rising);
+	wire cs_start;
+	wire cs_active;
+	wire cs_stop;
+	synchronizer ss_syncer(MAJOR_CLOCK, !SS, cs_active, cs_start, cs_stop);
 
 	wire sck_sync;
-	wire sck_rising;
-	wire sck_falling;
-	synchronizer sck_syncer(MAJOR_CLOCK, SCK, sck_sync, sck_rising, sck_falling);
-	wire sample_in = sck_rising;
-	wire latch_out = sck_falling;
+	wire sck_sample;
+	wire sck_latch;
+	synchronizer sck_syncer(MAJOR_CLOCK, SCK ^ CPOL, sck_sync, sck_sample, sck_latch);
 
 	wire mosi_sync;
 	synchronizer mosi_syncer(MAJOR_CLOCK, SDI, mosi_sync);
 
-	reg miso_out;
-	tristate_output miso_driver(SDO, !SS, miso_out);
+	wire miso_bit = downcount[DOWNCOUNT_WIDTH-1];
+	reg miso_buffer = 0;
+	tristate_output miso_driver(SDO, !SS, miso_buffer);
 
 	always @(posedge MAJOR_CLOCK) begin
 		if(cs_active) begin
 			// SPI shift logic
-			if(sample_in) begin
-				{downcount, upcount} <= { mosi_sync, downcount, upcount[UPCOUNT_WIDTH-1:1] };
-			end else if(latch_out) begin
-				miso_out <= upcount[0];
+			if(sck_sample) begin
+				{downcount, upcount} <= { downcount[DOWNCOUNT_WIDTH-2:0], upcount, mosi_sync };
+			end else if(sck_latch) begin
+				miso_buffer <= miso_bit;
 			end
 			minor_edge_seen <= 0;
 		end else begin
 			// counting logic
 			if(do_upcount) begin
-				upcount = upcount + 1;
+				upcount <= upcount + 1;
 			end
 			if(minor_rising) begin
 				if(minor_edge_seen) begin
-					downcount = downcount - 1;
+					downcount <= downcount - 1;
 				end
 				minor_edge_seen <= 1;
 			end
-			miso_out <= 0;
+			miso_buffer <= miso_bit;
 		end
 	end
 
