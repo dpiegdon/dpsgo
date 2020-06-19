@@ -42,8 +42,6 @@ module top(
 	wire allow_downcount = |downcount;
 	wire do_upcount = allow_downcount && minor_edge_seen && !&upcount;
 
-	assign FPGA_INT = !allow_downcount;
-
 	wire minor_sync;
 	wire minor_rising;
 	wire minor_falling;
@@ -65,6 +63,8 @@ module top(
 	wire miso_bit = downcount[DOWNCOUNT_WIDTH-1];
 	reg miso_buffer = 0;
 	tristate_output miso_driver(SDO, !SS, miso_buffer);
+
+	assign FPGA_INT = !allow_downcount && !cs_active;
 
 	always @(posedge MAJOR_CLOCK) begin
 		if(cs_active) begin
