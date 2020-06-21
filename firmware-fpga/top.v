@@ -11,8 +11,8 @@ module top(
 	output wire SDO);
 
 	localparam CPOL = 1'b1;
-	localparam DOWNCOUNT_WIDTH = 8;
-	localparam UPCOUNT_WIDTH = 34;
+	localparam DOWNCOUNT_WIDTH = 16;
+	localparam UPCOUNT_WIDTH = 40;
 	localparam WIDTH = UPCOUNT_WIDTH + DOWNCOUNT_WIDTH;
 
 	/*
@@ -78,11 +78,27 @@ module top(
 		end else begin
 			// counting logic
 			if(do_upcount) begin
-				upcount <= upcount + 1;
+				// upcount is very wide, so let's use
+				// look-ahead to increase adding speed.
+				upcount[11:0] <= upcount[11:0] + 1;
+				if(&upcount[11:0]) begin
+					upcount[23:12] <= upcount[23:12] + 1;
+					if(&upcount[23:12]) begin
+						upcount[35:24] <= upcount[35:24] + 1;
+						if(&upcount[35:24]) begin
+							upcount[UPCOUNT_WIDTH-1:36] <= upcount[UPCOUNT_WIDTH-1:36] + 1;
+						end
+					end
+				end
 			end
 			if(minor_rising) begin
 				if(minor_edge_seen) begin
-					downcount <= downcount - 1;
+					// same goes here: use look-ahead to
+					// increase subtraction speed
+					downcount[11:0] <= downcount[11:0] - 1;
+					if(!|downcount[11:0]) begin
+						downcount[DOWNCOUNT_WIDTH-1:12] <= downcount[DOWNCOUNT_WIDTH-1:12] - 1;
+					end
 				end
 				minor_edge_seen <= 1;
 			end

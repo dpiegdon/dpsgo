@@ -53,7 +53,7 @@ top.dot: $(FILES)
 %.dot: %.v
 	@# further details: techmap, flatten
 	@# see http://www.clifford.at/yosys/files/yosys_appnote_011_design_investigation.pdf
-	yosys -p 'proc; opt -fine -full; show -colors 1 -width -stretch -prefix $(subst .dot,,$@) -format dot $(subst .dot,,$(notdir $@))' $^
+	yosys -p 'synth_ice40 -abc2 -run :flatten -top $(subst .v,,$<); show -colors 1 -width -prefix $(subst .dot,,$@) -format dot $(subst .dot,,$(notdir $@))' $^
 
 %_tb.test: %_tb.v %.v
 	iverilog -o $@ $^
@@ -62,7 +62,7 @@ top.dot: $(FILES)
 	yosys -Q $(QUIET) -p 'synth_ice40 -abc2 -top $(subst .v,,$<) -json $@' $^
 
 %.asc: %.json
-	nextpnr-ice40 $(QUIET) --promote-logic --opt-timing --$(DEVICE) --package $(PACKAGE) --pcf $(PCF) --json $< --asc $@
+	nextpnr-ice40 $(QUIET) --freq 80 --promote-logic --opt-timing --$(DEVICE) --package $(PACKAGE) --pcf $(PCF) --json $< --asc $@
 
 %.bin: %.asc
 	icepack $< $@
