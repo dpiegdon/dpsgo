@@ -1,19 +1,22 @@
 `default_nettype none
 
 module top(
-	input wire MAJOR_CLOCK,
+	input  wire SCK,
+	input  wire SS,
+	input  wire SDI,
+	output wire SDO,
 	output wire FPGA_INT,
-	input  wire MINOR_CLOCK,
 
-	input wire SS,
-	input wire SCK,
-	input wire SDI,
-	output wire SDO);
+	input wire MAJOR_CLOCK,
+	input  wire MINOR_CLOCK,
+	);
+
 
 	localparam CPOL = 1'b1;
+
 	localparam DOWNCOUNT_WIDTH = 16;
 	localparam UPCOUNT_WIDTH = 40;
-	localparam WIDTH = UPCOUNT_WIDTH + DOWNCOUNT_WIDTH;
+
 
 	/*
 	 * upcount and downcount combined are the SPI word. they are
@@ -35,46 +38,47 @@ module top(
 	 *      \-------------|-----------/
 	 */
 
+
+	// SPI interface and counter
 	reg [UPCOUNT_WIDTH-1:0] upcount = 0;
 	reg [DOWNCOUNT_WIDTH-1:0] downcount = 0;
 
 	reg minor_edge_seen = 0;
-	wire allow_downcount = |downcount;
-	wire do_upcount = allow_downcount && minor_edge_seen && !&upcount;
+	wire downcount_done = |downcount;
+	wire do_upcount = downcount_done && minor_edge_seen && !&upcount;
 
-	wire minor_sync;
 	wire minor_rising;
-	wire minor_falling;
-	synchronizer minor_syncer(MAJOR_CLOCK, MINOR_CLOCK, minor_sync, minor_rising, minor_falling);
+	synchronizer minor_syncer(.clk(MAJOR_CLOCK), .in(MINOR_CLOCK), .out(), .rising_edge(minor_rising), .falling_edge());
 
 	wire cs_start;
 	wire cs_active;
-	wire cs_stop;
-	synchronizer ss_syncer(MAJOR_CLOCK, !SS, cs_active, cs_start, cs_stop);
+	synchronizer ss_syncer(.clk(MAJOR_CLOCK), .in(!SS), .out(cs_active), .rising_edge(cs_start), .falling_edge());
 
-	wire sck_sync;
 	wire sck_sample;
 	wire sck_latch;
-	synchronizer sck_syncer(MAJOR_CLOCK, SCK ^ CPOL, sck_sync, sck_sample, sck_latch);
+	synchronizer sck_syncer(.clk(MAJOR_CLOCK), .in(SCK ^ CPOL), .out(), .rising_edge(sck_sample), .falling_edge(sck_latch));
 
 	wire mosi_sync;
-	synchronizer mosi_syncer(MAJOR_CLOCK, SDI, mosi_sync);
+	synchronizer mosi_syncer(.clk(MAJOR_CLOCK), .in(SDI), .out(mosi_sync), .rising_edge(), .falling_edge());
 
 	wire miso_bit = downcount[DOWNCOUNT_WIDTH-1];
 	reg miso_buffer = 0;
 	tristate_output miso_driver(SDO, !SS, miso_buffer);
 
-	assign FPGA_INT = !allow_downcount && !cs_active;
+	assign FPGA_INT = (!downcount_done) && !cs_active;
 
 	always @(posedge MAJOR_CLOCK) begin
 		if(cs_active) begin
-			// SPI shift logic
-			if(sck_sample) begin
-				{downcount, upcount} <= { downcount[DOWNCOUNT_WIDTH-2:0], upcount, mosi_sync };
-			end else if(sck_latch) begin
-				miso_buffer <= miso_bit;
+			if(cs_start) begin
+				minor_edge_seen <= 0;
+			end else begin
+				// SPI shift logic
+				if(sck_sample) begin
+					{ downcount, upcount } <= { downcount[DOWNCOUNT_WIDTH-2:0], upcount, mosi_sync };
+				end else if(sck_latch) begin
+					miso_buffer <= miso_bit;
+				end
 			end
-			minor_edge_seen <= 0;
 		end else begin
 			// counting logic
 			if(do_upcount) begin
@@ -94,10 +98,16 @@ module top(
 			if(minor_rising) begin
 				if(minor_edge_seen) begin
 					// same goes here: use look-ahead to
-					// increase subtraction speed
-					downcount[11:0] <= downcount[11:0] - 1;
-					if(!|downcount[11:0]) begin
-						downcount[DOWNCOUNT_WIDTH-1:12] <= downcount[DOWNCOUNT_WIDTH-1:12] - 1;
+					// increase subtraction speed.
+					downcount[3:0] <= downcount[3:0] - 1;
+					if(!|downcount[3:0]) begin
+						downcount[11:4] <= downcount[11:4] - 1;
+						if(!|downcount[11:4]) begin
+							downcount[11:4] <= downcount[11:4] - 1;
+							if(!|downcount[11:4]) begin
+								downcount[DOWNCOUNT_WIDTH-1:12] <= downcount[DOWNCOUNT_WIDTH-1:12] - 1;
+							end
+						end
 					end
 				end
 				minor_edge_seen <= 1;

@@ -2,7 +2,9 @@
 firmware-fpga/*.asc
 firmware-fpga/*.bin
 firmware-fpga/*.blif
+firmware-fpga/*.dot
 firmware-fpga/*.json
+firmware-fpga/*.png
 firmware-fpga/*.rpt
 pcb/*.bak
 pcb/*.sch-bak

@@ -13,8 +13,14 @@ TESTS=$(TESTBENCHES:%.v=%.test)
 .PRECIOUS: %.json %.asc %.bin %.rpt
 
 FILES= \
+	verilog-buildingblocks/charlieplexer.v \
+	verilog-buildingblocks/debouncer.v \
+	verilog-buildingblocks/rotary_encoder.v \
 	verilog-buildingblocks/synchronizer.v \
+	verilog-buildingblocks/lattice_ice40/debounced_button.v \
+	verilog-buildingblocks/lattice_ice40/rotary_encoder_pullup.v \
 	verilog-buildingblocks/lattice_ice40/tristate_output.v \
+	verilog-buildingblocks/lattice_ice40/pullup_input.v \
 	top.v
 
 
@@ -62,7 +68,7 @@ top.dot: $(FILES)
 	yosys -Q $(QUIET) -p 'synth_ice40 -abc2 -top $(subst .v,,$<) -json $@' $^
 
 %.asc: %.json
-	nextpnr-ice40 $(QUIET) --freq 80 --promote-logic --opt-timing --$(DEVICE) --package $(PACKAGE) --pcf $(PCF) --json $< --asc $@
+	nextpnr-ice40 $(QUIET) --freq 70 --promote-logic --opt-timing --$(DEVICE) --package $(PACKAGE) --pcf $(PCF) --json $< --asc $@
 
 %.bin: %.asc
 	icepack $< $@
