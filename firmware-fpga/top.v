@@ -48,18 +48,18 @@ module top(
 	wire do_upcount = downcount_done && minor_edge_seen && !&upcount;
 
 	wire minor_rising;
-	synchronizer minor_syncer(.clk(MAJOR_CLOCK), .in(MINOR_CLOCK), .out(), .rising_edge(minor_rising), .falling_edge());
+	synchronizer #(.EXTRA_DEPTH(3)) minor_syncer(.clk(MAJOR_CLOCK), .in(MINOR_CLOCK), .out(), .rising_edge(minor_rising), .falling_edge());
 
 	wire cs_start;
 	wire cs_active;
-	synchronizer ss_syncer(.clk(MAJOR_CLOCK), .in(!SS), .out(cs_active), .rising_edge(cs_start), .falling_edge());
+	synchronizer #(.EXTRA_DEPTH(3)) ss_syncer(.clk(MAJOR_CLOCK), .in(!SS), .out(cs_active), .rising_edge(cs_start), .falling_edge());
 
 	wire sck_sample;
 	wire sck_latch;
-	synchronizer sck_syncer(.clk(MAJOR_CLOCK), .in(SCK ^ CPOL), .out(), .rising_edge(sck_sample), .falling_edge(sck_latch));
+	synchronizer #(.EXTRA_DEPTH(3)) sck_syncer(.clk(MAJOR_CLOCK), .in(SCK ^ CPOL), .out(), .rising_edge(sck_sample), .falling_edge(sck_latch));
 
 	wire mosi_sync;
-	synchronizer mosi_syncer(.clk(MAJOR_CLOCK), .in(SDI), .out(mosi_sync), .rising_edge(), .falling_edge());
+	synchronizer #(.EXTRA_DEPTH(3)) mosi_syncer(.clk(MAJOR_CLOCK), .in(SDI), .out(mosi_sync), .rising_edge(), .falling_edge());
 
 	wire miso_bit = downcount[DOWNCOUNT_WIDTH-1];
 	reg miso_buffer = 0;
@@ -95,7 +95,7 @@ module top(
 					end
 				end
 			end
-			if(minor_rising) begin
+			if(minor_rising && !downcount_done) begin
 				if(minor_edge_seen) begin
 					// same goes here: use look-ahead to
 					// increase subtraction speed.
