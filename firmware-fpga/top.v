@@ -44,8 +44,8 @@ module top(
 	reg [DOWNCOUNT_WIDTH-1:0] downcount = 0;
 
 	reg minor_edge_seen = 0;
-	wire downcount_done = |downcount;
-	wire do_upcount = downcount_done && minor_edge_seen && !&upcount;
+	wire do_downcount = |downcount;
+	wire do_upcount = do_downcount && minor_edge_seen && !&upcount;
 
 	wire minor_rising;
 	synchronizer #(.EXTRA_DEPTH(3)) minor_syncer(.clk(MAJOR_CLOCK), .in(MINOR_CLOCK), .out(), .rising_edge(minor_rising), .falling_edge());
@@ -65,7 +65,7 @@ module top(
 	reg miso_buffer = 0;
 	tristate_output miso_driver(SDO, !SS, miso_buffer);
 
-	assign FPGA_INT = (!downcount_done) && !cs_active;
+	assign FPGA_INT = !do_downcount && !cs_active;
 
 	always @(posedge MAJOR_CLOCK) begin
 		if(cs_active) begin
@@ -95,7 +95,7 @@ module top(
 					end
 				end
 			end
-			if(minor_rising && !downcount_done) begin
+			if(minor_rising && do_downcount) begin
 				if(minor_edge_seen) begin
 					// same goes here: use look-ahead to
 					// increase subtraction speed.
