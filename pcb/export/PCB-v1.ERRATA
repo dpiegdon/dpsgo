@@ -10,13 +10,17 @@ Power supply:
 * [done] 1.2V rail has very little current, so shrink footprint size. (implemented in master branch)
 * [done] distance between input protection diode D13 and input connector GND is very small. increase. (implemented in master branch)
 * [done] DAC Output VOUT to Uin of OCXO should not get too close to any noisy signals like i2c. move north of temp sensor U1. (implemented in master branch)
+* recalculate RC filter networks for TPS652510 supply given measured current requirements
+* make sure all pads have thermal relief to improve soldering
 * add some GND pins to hook up probes
 * 3.3V rail ripple could be lower. Maybe increase L2 to 10u?
 * 3.3V rail also might have little current. Measure under load and then maybe shrink footprint, too?
 * Add pull-downs to EN_12V, EN_1V2 and pull-up to ~EN_10V, so power does not autostart. That allows proper system-check by firmware before enabling all rails.
 * Make pull-up on CRESET_B of FPGA a pull-down, and rename net to ~FPGA_RESET.
 * Add pull-down to ~GPS_RESET to prevent auto-startup.
-* remove higher copper planes under OCXO to reduce temperature leakage
+* remove [higher?] copper planes under OCXO to reduce temperature leakage
+* optionally add clean 3V3 analog rail via LDO from next higher rail (10V?) to improve Si5351C output quality (needs current recalculation)
+* optionally add AD9102 DDS for one completely configurable DDS channel? (needs current recalculation)
 
 
 RF section:
